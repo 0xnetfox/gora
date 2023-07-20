@@ -17,8 +17,9 @@
                 stdenv = pkgs.clangStdenv;
 
                 nativeBuildInputs = with pkgs; [
-                    meson
-                    ninja
+                    gnumake
+                    cmake
+                    clang-tools
                 ];
             };
         });
