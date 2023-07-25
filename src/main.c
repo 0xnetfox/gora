@@ -63,8 +63,7 @@ int main(int argc, char **argv) {
     if ((stream = gora_read_file(argv[1])) == NULL)
         goto file_err;
 
-    printf("%s", stream);
-
+    gora_parse(stream);
     free(stream);
 
     return EXIT_SUCCESS;
