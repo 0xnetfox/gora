@@ -9,4 +9,6 @@ add_executable(
     src/main.c
     src/parser.c
     src/parser.h
+    src/gora_list.h
+    src/gora_list.c
 )
