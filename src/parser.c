@@ -62,4 +62,11 @@ struct gora_list* gora_parser_parse(char *stream) {
 
     return token_lst;
 }
+
+void gora_parser_free_token_list(struct gora_list *lst) {
+    struct token *curr, *next; 
+
+    gora_list_foreach_safe(curr, next, lst, link) {
+        free(curr);
+    }
 }

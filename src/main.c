@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
     struct gora_list *token_lst = gora_parser_parse(stream);
 
     free(stream);
+    gora_parser_free_token_list(token_lst);
 
     return EXIT_SUCCESS;
 

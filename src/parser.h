@@ -19,4 +19,6 @@ struct token {
 
 struct gora_list* gora_parser_parse(char *stream);
 
+void gora_parser_free_token_list(struct gora_list *lst);
+
 #endif // GORA_PARSER
