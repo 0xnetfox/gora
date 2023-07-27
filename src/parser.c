@@ -1,6 +1,9 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+
+#include "gora_list.h"
 #include "parser.h"
 
 struct p_token {
@@ -23,20 +26,40 @@ struct p_token parse_internal(char *stream, char lexeme) {
         return res;
     }
 
-    res.token        = NULL;
+    res.token        = malloc(sizeof(struct token));
+    res.token->type  = GORA_TT_TEMPORAL;
+
+    res.token->value    = malloc(2 * sizeof(char));
+    res.token->value[0] = lexeme;
+    res.token->value[1] = '\0';
+
+    gora_list_init(&res.token->link);
+
     res.chr_consumed = 1;
+
     return res;
 }
 
-struct token* gora_parse(char *stream) {
-    char *start = stream;
-
+struct gora_list* gora_parser_parse(char *stream) {
     int  idx;
     char lexeme;
+
+    struct gora_list *token_lst = malloc(sizeof(struct gora_list)); 
+    struct gora_list *token_lst_tail = token_lst;
+    gora_list_init(token_lst);
+
     while ((lexeme = stream[idx]) != '\0') {
-        struct p_token tkn = parse_internal(stream, lexeme);
-        idx += tkn.chr_consumed;
+        struct p_token parsed = parse_internal(stream, lexeme);
+
+        if (parsed.token != NULL) {
+            gora_list_insert(token_lst_tail, &parsed.token->link);
+            token_lst_tail = &parsed.token->link;
+            printf("parsing: %s, %p, %p\n", parsed.token->value, parsed.token, &parsed.token->link);
+        }
+
+        idx += parsed.chr_consumed;
     }
 
-    printf("finalized\n");
+    return token_lst;
+}
 }

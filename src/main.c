@@ -63,7 +63,8 @@ int main(int argc, char **argv) {
     if ((stream = gora_read_file(argv[1])) == NULL)
         goto file_err;
 
-    gora_parse(stream);
+    struct gora_list *token_lst = gora_parser_parse(stream);
+
     free(stream);
 
     return EXIT_SUCCESS;
