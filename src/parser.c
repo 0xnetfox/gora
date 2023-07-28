@@ -67,6 +67,7 @@ void gora_parser_free_token_list(struct gora_list *lst) {
     struct token *curr, *next; 
 
     gora_list_foreach_safe(curr, next, lst, link) {
+        free(curr->value);
         free(curr);
     }
 }
