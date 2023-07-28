@@ -1,13 +1,16 @@
 #ifndef GORA_PARSER
 #define GORA_PARSER
 
+#include <stdint.h>
 #include "gora_list.h"
+
+#define GORA_ALPH_DIGIT ((char *) "0123456789\0")
 
 /// Indicates the valid types for tokens
 enum TokenType {
     GORA_TT_IDENTIFIER,
     GORA_TT_LITERAL,
-    GORA_TT_TEMPORAL
+    GORA_TT_UNKNOWN
 };
 
 /// Represents a correctly parsed token
