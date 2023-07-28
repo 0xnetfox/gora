@@ -4,8 +4,10 @@
 #include <stdbool.h>
 #include "fsm.h"
 
+// TODO :: netfox :: write test for this
 bool is_valid(struct fsm *fsm, uint8_t state) {
-    int i; uint8_t f_state;
+    int i = 0;
+    uint8_t f_state;
     while ((f_state = fsm->f_states[i++]) != GORA_FSM_INVALID_STATE) {
         if (f_state == state) {
             return true;
