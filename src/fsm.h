@@ -7,10 +7,10 @@
 
 #define GORA_FSM_ALPH_DIGIT ((char *) "0123456789\0")
 
-#define GORA_FSM_INVALID_STATE 0
-#define GORA_FSM_INVALID_TRANSITION      \
-    { .i_state = GORA_FSM_INVALID_STATE, \
-      .n_state = GORA_FSM_INVALID_STATE, \
+#define GORA_FSM_NULL_STATE 0
+#define GORA_FSM_NULL_TRANSITION      \
+    { .i_state = GORA_FSM_NULL_STATE, \
+      .n_state = GORA_FSM_NULL_STATE, \
       .syms = NULL }
 
 struct fsm {

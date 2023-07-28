@@ -8,7 +8,7 @@ void tearDown() {}
 /// 1, 1.23, -1, -1.23
 static struct fsm test_fsm_num = {
     .i_state     = 1,
-    .f_states    = (uint8_t[]) { 2, 5, GORA_FSM_INVALID_STATE },
+    .f_states    = (uint8_t[]) { 2, 5, GORA_FSM_NULL_STATE },
     .transitions = (struct transition[]) {
       { .i_state = 1, .n_state = 2, .syms = GORA_FSM_ALPH_DIGIT },
       { .i_state = 1, .n_state = 3, .syms = "-"                 },
@@ -17,7 +17,7 @@ static struct fsm test_fsm_num = {
       { .i_state = 3, .n_state = 2, .syms = GORA_FSM_ALPH_DIGIT },
       { .i_state = 4, .n_state = 5, .syms = GORA_FSM_ALPH_DIGIT },
       { .i_state = 5, .n_state = 5, .syms = GORA_FSM_ALPH_DIGIT },
-      GORA_FSM_INVALID_TRANSITION
+      GORA_FSM_NULL_TRANSITION
     },
 };
 
@@ -35,8 +35,8 @@ void test_next_fails_with_unvalid_state() {
     uint8_t n_state_1 = next_state(&test_fsm_num, 1, '/');
     uint8_t n_state_2 = next_state(&test_fsm_num, 4, '-');
 
-    TEST_ASSERT_EQUAL(n_state_1, GORA_FSM_INVALID_STATE);
-    TEST_ASSERT_EQUAL(n_state_2, GORA_FSM_INVALID_STATE);
+    TEST_ASSERT_EQUAL(n_state_1, GORA_FSM_NULL_STATE);
+    TEST_ASSERT_EQUAL(n_state_2, GORA_FSM_NULL_STATE);
 }
 
 void test_solve_finds_end_state() {

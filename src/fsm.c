@@ -8,7 +8,7 @@
 bool is_valid(struct fsm *fsm, uint8_t state) {
     int i = 0;
     uint8_t f_state;
-    while ((f_state = fsm->f_states[i++]) != GORA_FSM_INVALID_STATE) {
+    while ((f_state = fsm->f_states[i++]) != GORA_FSM_NULL_STATE) {
         if (f_state == state) {
             return true;
         }
@@ -18,7 +18,7 @@ bool is_valid(struct fsm *fsm, uint8_t state) {
 }
 
 uint8_t next_state(struct fsm *fsm, uint8_t state, char input) {
-    for (int i = 0; fsm->transitions[i].i_state != GORA_FSM_INVALID_STATE; i++) {
+    for (int i = 0; fsm->transitions[i].i_state != GORA_FSM_NULL_STATE; i++) {
         struct transition *t = &fsm->transitions[i];
         
         if (t->i_state != state)
@@ -32,7 +32,7 @@ uint8_t next_state(struct fsm *fsm, uint8_t state, char input) {
         }
     }
 
-    return GORA_FSM_INVALID_STATE;
+    return GORA_FSM_NULL_STATE;
 }
 
 struct fsm_result
@@ -43,8 +43,9 @@ solve(struct fsm *fsm, uint8_t state, char *stream, size_t stream_off) {
         goto ret;
 
     uint8_t next = next_state(fsm, state, input);
-    if (next != GORA_FSM_INVALID_STATE)
+    if (next != GORA_FSM_NULL_STATE) {
         return solve(fsm, next, stream, stream_off + 1);
+    }
 
 ret:
     return (struct fsm_result) {
