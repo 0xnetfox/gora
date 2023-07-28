@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include "gora_list.h"
 
-#define GORA_ALPH_DIGIT ((char *) "0123456789\0")
-
 /// Indicates the valid types for tokens
 enum TokenType {
     GORA_TT_IDENTIFIER,

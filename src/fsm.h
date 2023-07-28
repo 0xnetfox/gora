@@ -5,7 +5,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define GORA_FSM_ALPH_DIGIT ((char *) "0123456789\0")
+#define GORA_FSM_ALPH_B10_DIGIT   "0123456789"
+#define GORA_FSM_ALPH_CAP_LETTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 #define GORA_FSM_NULL_STATE 0
 #define GORA_FSM_NULL_TRANSITION      \

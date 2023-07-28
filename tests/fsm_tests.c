@@ -10,13 +10,13 @@ static struct fsm test_fsm_num = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 2, 5, GORA_FSM_NULL_STATE },
     .transitions = (struct transition[]) {
-      { .i_state = 1, .n_state = 2, .syms = GORA_FSM_ALPH_DIGIT },
-      { .i_state = 1, .n_state = 3, .syms = "-"                 },
-      { .i_state = 2, .n_state = 2, .syms = GORA_FSM_ALPH_DIGIT },
-      { .i_state = 2, .n_state = 4, .syms = "."                 },
-      { .i_state = 3, .n_state = 2, .syms = GORA_FSM_ALPH_DIGIT },
-      { .i_state = 4, .n_state = 5, .syms = GORA_FSM_ALPH_DIGIT },
-      { .i_state = 5, .n_state = 5, .syms = GORA_FSM_ALPH_DIGIT },
+      { .i_state = 1, .n_state = 2, .syms = GORA_FSM_ALPH_B10_DIGIT },
+      { .i_state = 1, .n_state = 3, .syms = "-"                     },
+      { .i_state = 2, .n_state = 2, .syms = GORA_FSM_ALPH_B10_DIGIT },
+      { .i_state = 2, .n_state = 4, .syms = "."                     },
+      { .i_state = 3, .n_state = 2, .syms = GORA_FSM_ALPH_B10_DIGIT },
+      { .i_state = 4, .n_state = 5, .syms = GORA_FSM_ALPH_B10_DIGIT },
+      { .i_state = 5, .n_state = 5, .syms = GORA_FSM_ALPH_B10_DIGIT },
       GORA_FSM_NULL_TRANSITION
     },
 };
