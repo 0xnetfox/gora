@@ -1,7 +1,6 @@
 add_executable(
     fsm_test_app
-    ../src/fsm.c
-    ./dumb.c
+    ./fsm_tests.c
     ../lib/unity/unity.c
 )
 
