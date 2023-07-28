@@ -17,7 +17,7 @@ static struct fsm test_fsm_num = {
       { .i_state = 3, .n_state = 2, .syms = GORA_FSM_ALPH_DIGIT },
       { .i_state = 4, .n_state = 5, .syms = GORA_FSM_ALPH_DIGIT },
       { .i_state = 5, .n_state = 5, .syms = GORA_FSM_ALPH_DIGIT },
-      GORA_FSM_INVALID_STATE
+      GORA_FSM_INVALID_TRANSITION
     },
 };
 
