@@ -1,8 +1,6 @@
-digraph finite_state_machine {
-	fontname="Helvetica,Arial,sans-serif"
-	node [fontname="Helvetica,Arial,sans-serif"]
-	edge [fontname="Helvetica,Arial,sans-serif"]
+digraph literals_numeric_dfa {
 	rankdir=LR;
+
 	node [shape = doublecircle]; q2 q4 q6 q9 q12 q14;
 	node [shape = circle];
 	
