@@ -11,45 +11,57 @@
 
 #define GORA_PARSER_CAP_ALPHA_NUM GORA_FSM_ALPH_B10_DIGIT GORA_FSM_ALPH_CAP_LETTERS
 
+bool syms_test_num(char sym) {
+    return sym >= '0' && sym <= '9';
+}
+
+bool syms_test_cap_alph(char sym) {
+    return sym >= 'A' && sym <= 'Z';
+}
+
+bool syms_test_cap_alph_num(char sym) {
+    return syms_test_cap_alph(sym) || syms_test_num(sym);
+}
+
+GORA_FSM_TEST_CHAR(syms_test_e,     'e')
+GORA_FSM_TEST_CHAR(syms_test_r,     'r')
+GORA_FSM_TEST_CHAR(syms_test_dot,   '.')
+GORA_FSM_TEST_CHAR(syms_test_hypen, '-')
+
 // TODO :: netfox :: write tests owo
 static struct fsm st88_number_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 2, 4, 6, 9, 12, 14, GORA_FSM_NULL_STATE },
     .transitions = (struct transition[]) {
-      { .i_state = 1,  .n_state = 2,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 1,  .n_state = 3,  .syms = "-"                       },
-      { .i_state = 2,  .n_state = 2,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 2,  .n_state = 5,  .syms = "."                       },
-      { .i_state = 2,  .n_state = 7,  .syms = "e"                       },
-      { .i_state = 2,  .n_state = 10, .syms = "r"                       },
-      { .i_state = 3,  .n_state = 4,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 4,  .n_state = 4,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 4,  .n_state = 5,  .syms = "."                       },
-      { .i_state = 4,  .n_state = 7,  .syms = "e"                       },
-      { .i_state = 5,  .n_state = 6,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 6,  .n_state = 6,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 6,  .n_state = 7,  .syms = "e"                       },
-      { .i_state = 7,  .n_state = 8,  .syms = "-"                       },
-      { .i_state = 7,  .n_state = 9,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 8,  .n_state = 9,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 9,  .n_state = 9,  .syms = GORA_FSM_ALPH_B10_DIGIT   },
-      { .i_state = 10, .n_state = 12, .syms = GORA_PARSER_CAP_ALPHA_NUM },
-      { .i_state = 10, .n_state = 11, .syms = "-"                       },
-      { .i_state = 11, .n_state = 12, .syms = GORA_PARSER_CAP_ALPHA_NUM },
-      { .i_state = 12, .n_state = 12, .syms = GORA_PARSER_CAP_ALPHA_NUM },
-      { .i_state = 12, .n_state = 13, .syms = "."                       },
-      { .i_state = 12, .n_state = 7,  .syms = "e"                       },
-      { .i_state = 13, .n_state = 14, .syms = GORA_PARSER_CAP_ALPHA_NUM },
-      { .i_state = 14, .n_state = 14, .syms = GORA_PARSER_CAP_ALPHA_NUM },
-      { .i_state = 14, .n_state = 7,  .syms = "e"                       },
+      { .i_state = 1,  .n_state = 2,  .syms = syms_test_num          },
+      { .i_state = 1,  .n_state = 3,  .syms = syms_test_hypen        },
+      { .i_state = 2,  .n_state = 2,  .syms = syms_test_num          },
+      { .i_state = 2,  .n_state = 5,  .syms = syms_test_dot          },
+      { .i_state = 2,  .n_state = 7,  .syms = syms_test_e            },
+      { .i_state = 2,  .n_state = 10, .syms = syms_test_r            },
+      { .i_state = 3,  .n_state = 4,  .syms = syms_test_num          },
+      { .i_state = 4,  .n_state = 4,  .syms = syms_test_num          },
+      { .i_state = 4,  .n_state = 5,  .syms = syms_test_dot          },
+      { .i_state = 4,  .n_state = 7,  .syms = syms_test_e            },
+      { .i_state = 5,  .n_state = 6,  .syms = syms_test_num          },
+      { .i_state = 6,  .n_state = 6,  .syms = syms_test_num          },
+      { .i_state = 6,  .n_state = 7,  .syms = syms_test_e            },
+      { .i_state = 7,  .n_state = 8,  .syms = syms_test_hypen        },
+      { .i_state = 7,  .n_state = 9,  .syms = syms_test_num          },
+      { .i_state = 8,  .n_state = 9,  .syms = syms_test_num          },
+      { .i_state = 9,  .n_state = 9,  .syms = syms_test_num          },
+      { .i_state = 10, .n_state = 12, .syms = syms_test_cap_alph_num },
+      { .i_state = 10, .n_state = 11, .syms = syms_test_hypen        },
+      { .i_state = 11, .n_state = 12, .syms = syms_test_cap_alph_num },
+      { .i_state = 12, .n_state = 12, .syms = syms_test_cap_alph_num },
+      { .i_state = 12, .n_state = 13, .syms = syms_test_dot          },
+      { .i_state = 12, .n_state = 7,  .syms = syms_test_e            },
+      { .i_state = 13, .n_state = 14, .syms = syms_test_cap_alph_num },
+      { .i_state = 14, .n_state = 14, .syms = syms_test_cap_alph_num },
+      { .i_state = 14, .n_state = 7,  .syms = syms_test_e            },
       GORA_FSM_NULL_TRANSITION
     },
 };
-
-// ALG to solve fsm
-// start on f_n1, fetch character from stream
-// if character has a transition from f_n1 -> f_n2, recurse
-// otherwise, check if f_n1 is an end state
 
 struct p_token {
     struct token *token;

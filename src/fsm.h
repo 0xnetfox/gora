@@ -5,14 +5,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define GORA_FSM_ALPH_B10_DIGIT   "0123456789"
-#define GORA_FSM_ALPH_CAP_LETTERS "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
 #define GORA_FSM_NULL_STATE 0
 #define GORA_FSM_NULL_TRANSITION      \
     { .i_state = GORA_FSM_NULL_STATE, \
       .n_state = GORA_FSM_NULL_STATE, \
       .syms = NULL }
+
+#define GORA_FSM_TEST_CHAR(name, chr) \
+    static inline bool name(char sym) {      \
+        return chr == sym;     \
+    }
 
 struct fsm {
     uint8_t            i_state;
@@ -21,9 +23,10 @@ struct fsm {
 };
 
 struct transition {
-    char*   syms;
     uint8_t i_state;
     uint8_t n_state;
+
+    bool (*syms)(char);
 };
 
 struct fsm_result {

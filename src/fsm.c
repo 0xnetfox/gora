@@ -24,11 +24,8 @@ uint8_t next_state(struct fsm *fsm, uint8_t state, char input) {
         if (t->i_state != state)
             continue;
 
-        size_t sym_len = strlen(t->syms);
-        for (int j = 0; j < sym_len; j++) {
-            if (t->syms[j] == input) {
-                return t->n_state;
-            }
+        if (t->syms(input)) {
+            return t->n_state;
         }
     }
 
