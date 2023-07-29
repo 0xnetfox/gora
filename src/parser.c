@@ -98,27 +98,12 @@ bool is_st88_character(char chr) {
     return chr == '$';
 }
 
-int try_parse_character(char *stream, struct p_token *p_token) {
-    struct fsm_result fsm_res = gora_fsm_solve(&st88_character_fsm, stream);
-
-    if (!fsm_res.valid)
-        return 1;
-
-    p_token->token = malloc(sizeof(struct token));
-
-    p_token->token->value = malloc(fsm_res.stream_consumed + 1 * sizeof(char));
-    strncpy(p_token->token->value, stream, fsm_res.stream_consumed);
-    p_token->token->value[fsm_res.stream_consumed] = '\0';
-
-    p_token->token->type = GORA_TT_LITERAL;
-    p_token->chr_consumed = fsm_res.stream_consumed;
-    gora_list_init(&p_token->token->link);
-
-    return 0;
-}
-
-int try_parse_numeric(char *stream, struct p_token *p_token) {
-    struct fsm_result fsm_res = gora_fsm_solve(&st88_number_fsm, stream);
+int try_parse_fsm(
+        struct fsm *fsm,
+        char *stream,
+        enum TokenType type,
+        struct p_token *p_token) {
+    struct fsm_result fsm_res = gora_fsm_solve(fsm, stream);
 
     if (!fsm_res.valid)
         return 1;
@@ -148,13 +133,13 @@ struct p_token parse_internal(char *stream, char lexeme) {
     }
 
     if (is_st88_numeric(lexeme)) {
-        int res = try_parse_numeric(stream, &p_token);
+        int res = try_parse_fsm(&st88_number_fsm, stream, GORA_TT_LITERAL, &p_token);
         if (res == 0)
             return p_token;
     }
 
     if (is_st88_character(lexeme)) {
-        int res = try_parse_character(stream, &p_token);
+        int res = try_parse_fsm(&st88_character_fsm, stream, GORA_TT_LITERAL, &p_token);
         if (res == 0)
             return p_token;
     }
