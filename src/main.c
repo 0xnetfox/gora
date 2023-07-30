@@ -1,16 +1,17 @@
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 #include <fcntl.h>
-#include <sys/stat.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "parser.h"
 
-#define READ_MAX     16
+#define READ_MAX 16
 #define STREAM_CHUNK 512
 
-char *gora_read_file(char *filename) {
+char* gora_read_file(char* filename)
+{
     int fd = open(filename, O_RDONLY);
 
     if (fd == -1)
@@ -21,15 +22,15 @@ char *gora_read_file(char *filename) {
 
     size_t stream_sz    = 0;
     size_t stream_alloc = STREAM_CHUNK;
-    char  *stream       = calloc(STREAM_CHUNK, sizeof(char));
+    char*  stream       = calloc(STREAM_CHUNK, sizeof(char));
 
     while ((read_sz = read(fd, buff, READ_MAX)) > 0) {
         long unsigned int req_sz = stream_sz + read_sz;
 
         if (req_sz >= stream_alloc) {
-            char *new_stream;
+            char* new_stream;
 
-            if((new_stream = realloc(stream, stream_alloc + STREAM_CHUNK)) == NULL) {
+            if ((new_stream = realloc(stream, stream_alloc + STREAM_CHUNK)) == NULL) {
                 goto free_err;
             }
 
@@ -53,17 +54,18 @@ free_err:
     return NULL;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv)
+{
     if (argc != 2) {
         fprintf(stderr, "usage: %s <filename>\n", argv[0]);
         return EXIT_FAILURE;
     }
 
-    char *stream;
+    char* stream;
     if ((stream = gora_read_file(argv[1])) == NULL)
         goto file_err;
 
-    struct gora_list *token_lst = gora_parser_parse(stream);
+    struct gora_list* token_lst = gora_parser_parse(stream);
 
     free(stream);
     gora_parser_free_token_list(token_lst);

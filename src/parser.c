@@ -1,9 +1,9 @@
+#include <assert.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include "fsm.h"
 #include "gora_list.h"
@@ -11,28 +11,33 @@
 
 #define GORA_PARSER_CAP_ALPHA_NUM GORA_FSM_ALPH_B10_DIGIT GORA_FSM_ALPH_CAP_LETTERS
 
-bool syms_test_num(char sym) {
+bool syms_test_num(char sym)
+{
     return sym >= '0' && sym <= '9';
 }
 
-bool syms_test_cap_alph(char sym) {
+bool syms_test_cap_alph(char sym)
+{
     return sym >= 'A' && sym <= 'Z';
 }
 
-bool syms_test_any_visible_ascii(char sym) {
+bool syms_test_any_visible_ascii(char sym)
+{
     return sym >= 0x21 && sym <= 0x7E;
 }
 
-bool syms_test_cap_alph_num(char sym) {
+bool syms_test_cap_alph_num(char sym)
+{
     return syms_test_cap_alph(sym) || syms_test_num(sym);
 }
 
-GORA_FSM_TEST_CHAR(syms_test_e,      'e')
-GORA_FSM_TEST_CHAR(syms_test_r,      'r')
-GORA_FSM_TEST_CHAR(syms_test_dot,    '.')
-GORA_FSM_TEST_CHAR(syms_test_hypen,  '-')
+GORA_FSM_TEST_CHAR(syms_test_e, 'e')
+GORA_FSM_TEST_CHAR(syms_test_r, 'r')
+GORA_FSM_TEST_CHAR(syms_test_dot, '.')
+GORA_FSM_TEST_CHAR(syms_test_hypen, '-')
 GORA_FSM_TEST_CHAR(syms_test_dollar, '$')
 
+// clang-format off
 // TODO :: netfox :: write tests owo
 static struct fsm st88_character_fsm = {
     .i_state     = 1,
@@ -78,31 +83,36 @@ static struct fsm st88_number_fsm = {
       GORA_FSM_NULL_TRANSITION
     },
 };
+// clang-format on
 
 struct p_token {
-    struct token *token;
-    size_t       chr_consumed;
+    struct token* token;
+    size_t        chr_consumed;
 };
 
-bool is_whitespace(char chr) {
-  return chr == ' ' || chr == '\t' || chr == '\n';
+bool is_whitespace(char chr)
+{
+    return chr == ' ' || chr == '\t' || chr == '\n';
 }
 
 // TODO :: this may fail as - can be a value by itself in an expr
 //         .e.g. 32 - 15
-bool is_st88_numeric(char chr) {
+bool is_st88_numeric(char chr)
+{
     return (chr >= '0' && chr <= '9') || chr == '-';
 }
 
-bool is_st88_character(char chr) {
+bool is_st88_character(char chr)
+{
     return chr == '$';
 }
 
 int try_parse_fsm(
-        struct fsm *fsm,
-        char *stream,
-        enum TokenType type,
-        struct p_token *p_token) {
+    struct fsm*     fsm,
+    char*           stream,
+    enum TokenType  type,
+    struct p_token* p_token)
+{
     struct fsm_result fsm_res = gora_fsm_solve(fsm, stream);
 
     if (!fsm_res.valid)
@@ -114,7 +124,7 @@ int try_parse_fsm(
     strncpy(p_token->token->value, stream, fsm_res.stream_consumed);
     p_token->token->value[fsm_res.stream_consumed] = '\0';
 
-    p_token->token->type = GORA_TT_LITERAL;
+    p_token->token->type  = GORA_TT_LITERAL;
     p_token->chr_consumed = fsm_res.stream_consumed;
     gora_list_init(&p_token->token->link);
 
@@ -122,7 +132,8 @@ int try_parse_fsm(
 }
 
 // TODO :: netfox :: find better name
-struct p_token parse_internal(char *stream, char lexeme) {
+struct p_token parse_internal(char* stream, char lexeme)
+{
     struct p_token p_token;
 
     if (is_whitespace(lexeme)) {
@@ -144,8 +155,8 @@ struct p_token parse_internal(char *stream, char lexeme) {
             return p_token;
     }
 
-    p_token.token        = malloc(sizeof(struct token));
-    p_token.token->type  = GORA_TT_UNKNOWN;
+    p_token.token       = malloc(sizeof(struct token));
+    p_token.token->type = GORA_TT_UNKNOWN;
 
     p_token.token->value    = malloc(2 * sizeof(char));
     p_token.token->value[0] = lexeme;
@@ -158,12 +169,13 @@ struct p_token parse_internal(char *stream, char lexeme) {
     return p_token;
 }
 
-struct gora_list* gora_parser_parse(char *stream) {
+struct gora_list* gora_parser_parse(char* stream)
+{
     int  idx = 0;
     char lexeme;
 
-    struct gora_list *token_lst = malloc(sizeof(struct gora_list)); 
-    struct gora_list *token_lst_tail = token_lst;
+    struct gora_list* token_lst      = malloc(sizeof(struct gora_list));
+    struct gora_list* token_lst_tail = token_lst;
     gora_list_init(token_lst);
 
     while ((lexeme = stream[idx]) != '\0') {
@@ -182,10 +194,12 @@ struct gora_list* gora_parser_parse(char *stream) {
     return token_lst;
 }
 
-void gora_parser_free_token_list(struct gora_list *lst) {
-    struct token *curr, *next; 
+void gora_parser_free_token_list(struct gora_list* lst)
+{
+    struct token *curr, *next;
 
-    gora_list_foreach_safe(curr, next, lst, link) {
+    gora_list_foreach_safe(curr, next, lst, link)
+    {
         free(curr->value);
         free(curr);
     }
