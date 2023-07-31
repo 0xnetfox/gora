@@ -1,0 +1,11 @@
+digraph literals_string_dfa {
+        rankdir=LR;
+
+        node [shape = doublecircle]; q3;
+        node [shape = circle];
+
+        q1 -> q2 [label = "'"]
+        q2 -> q2 [label = "Σ - {'}"]
+        q2 -> q3 [label = "'"]
+        q3 -> q2 [label = "'"]
+}
