@@ -15,6 +15,7 @@ GORA_FSM_TEST_CHAR(syms_test_e, 'e')
 GORA_FSM_TEST_CHAR(syms_test_r, 'r')
 GORA_FSM_TEST_CHAR(syms_test_dot, '.')
 GORA_FSM_TEST_CHAR(syms_test_hypen, '-')
+GORA_FSM_TEST_CHAR(syms_test_pound, '#')
 GORA_FSM_TEST_CHAR(syms_test_quote, '\'')
 GORA_FSM_TEST_CHAR(syms_test_dollar, '$')
 
@@ -26,6 +27,11 @@ bool syms_test_num(char sym)
 bool syms_test_cap_alph(char sym)
 {
     return sym >= 'A' && sym <= 'Z';
+}
+
+bool syms_test_alph(char sym)
+{
+    return sym >= 'a' && sym <= 'z';
 }
 
 bool syms_test_any_visible_ascii(char sym)
@@ -43,8 +49,24 @@ bool syms_test_cap_alph_num(char sym)
     return syms_test_cap_alph(sym) || syms_test_num(sym);
 }
 
+bool syms_test_alph_num(char sym)
+{
+    return syms_test_alph(sym) || syms_test_cap_alph(sym) || syms_test_num(sym);
+}
+
 // clang-format off
 // TODO :: netfox :: write tests owo
+static struct fsm st88_symbol_fsm = {
+    .i_state     = 1,
+    .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
+    .transitions = (struct transition[]) {
+        { .i_state = 1, .n_state = 2, .syms = syms_test_pound    },
+        { .i_state = 2, .n_state = 3, .syms = syms_test_alph_num },
+        { .i_state = 3, .n_state = 3, .syms = syms_test_alph_num },
+        GORA_FSM_NULL_TRANSITION
+    },
+};
+
 static struct fsm st88_string_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
@@ -183,6 +205,16 @@ struct p_token parse_internal(char* stream, char lexeme)
         int res = try_parse_fsm(&st88_string_fsm, stream, GORA_TT_LITERAL, &p_token);
         if (res == 0)
             return p_token;
+    }
+
+    if (lexeme == '#') {
+        if (stream[1] == '(') {
+            // TODO :: netfox :: array
+        } else {
+            int res = try_parse_fsm(&st88_symbol_fsm, stream, GORA_TT_LITERAL, &p_token);
+            if (res == 0)
+                return p_token;
+        }
     }
 
     p_token.token       = malloc(sizeof(struct token));

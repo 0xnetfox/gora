@@ -1,0 +1,10 @@
+digraph literals_symbol_dfa {
+        rankdir=LR;
+
+        node [shape = doublecircle]; q3;
+        node [shape = circle];
+
+        q1 -> q2 [label = "#"]
+        q2 -> q3 [label = "A-Z,a-z,0-9"]
+        q3 -> q3 [label = "A-Z,a-z,0-9"]
+}
