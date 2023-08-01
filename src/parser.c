@@ -18,6 +18,8 @@ GORA_FSM_TEST_CHAR(syms_test_hypen, '-')
 GORA_FSM_TEST_CHAR(syms_test_pound, '#')
 GORA_FSM_TEST_CHAR(syms_test_quote, '\'')
 GORA_FSM_TEST_CHAR(syms_test_dollar, '$')
+GORA_FSM_TEST_CHAR(syms_test_open_parenthesis, '(')
+GORA_FSM_TEST_CHAR(syms_test_close_parenthesis, ')')
 
 bool syms_test_num(char sym)
 {
@@ -56,6 +58,38 @@ bool syms_test_alph_num(char sym)
 
 // clang-format off
 // TODO :: netfox :: write tests owo
+static struct fsm st88_identifier_fsm = {
+    .i_state     = 1,
+    .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
+    .transitions = (struct transition[]) {
+        { .i_state = 1, .n_state = 2, .syms = syms_test_pound    },
+        { .i_state = 2, .n_state = 3, .syms = syms_test_alph_num },
+        { .i_state = 3, .n_state = 3, .syms = syms_test_alph_num },
+        GORA_FSM_NULL_TRANSITION
+    },
+};
+
+static struct fsm st88_array_open_fsm = {
+    .i_state     = 1,
+    .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
+    .transitions = (struct transition[]) {
+        { .i_state = 1, .n_state = 2, .syms = syms_test_pound            },
+        { .i_state = 2, .n_state = 3, .syms = syms_test_open_parenthesis },
+        GORA_FSM_NULL_TRANSITION
+    },
+};
+
+// TODO :: netfox :: write tests owo
+static struct fsm st88_array_close_fsm = {
+    .i_state     = 1,
+    .f_states    = (uint8_t[]) { 2, GORA_FSM_NULL_STATE },
+    .transitions = (struct transition[]) {
+        { .i_state = 1, .n_state = 2, .syms = syms_test_close_parenthesis },
+        GORA_FSM_NULL_TRANSITION
+    },
+};
+
+// TODO :: netfox :: write tests owo
 static struct fsm st88_symbol_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
@@ -67,6 +101,7 @@ static struct fsm st88_symbol_fsm = {
     },
 };
 
+// TODO :: netfox :: write tests owo
 static struct fsm st88_string_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
@@ -153,6 +188,19 @@ bool is_st88_string(char chr)
     return chr == '\'';
 }
 
+int alloc_token_of_char(char chr, enum TokenType type, struct p_token *p_token) {
+    p_token-> token = malloc(sizeof(struct token));
+    p_token->token->value = malloc(2 * sizeof(char));
+    p_token->token->value[0] = chr;
+    p_token->token->value[1] = '\0';
+
+    p_token->token->type  = type;
+    p_token->chr_consumed = 1;
+    gora_list_init(&p_token->token->link);
+
+    return 0;
+}
+
 int try_parse_fsm(
     struct fsm*     fsm,
     char*           stream,
@@ -209,7 +257,9 @@ struct p_token parse_internal(char* stream, char lexeme)
 
     if (lexeme == '#') {
         if (stream[1] == '(') {
-            // TODO :: netfox :: array
+            int res = try_parse_fsm(&st88_array_open_fsm, stream, GORA_TT_LITERAL, &p_token);
+            if (res == 0)
+                return p_token;
         } else {
             int res = try_parse_fsm(&st88_symbol_fsm, stream, GORA_TT_LITERAL, &p_token);
             if (res == 0)
@@ -217,16 +267,13 @@ struct p_token parse_internal(char* stream, char lexeme)
         }
     }
 
-    p_token.token       = malloc(sizeof(struct token));
-    p_token.token->type = GORA_TT_UNKNOWN;
+    if (lexeme == ')') {
+        int res = try_parse_fsm(&st88_array_close_fsm, stream, GORA_TT_LITERAL, &p_token);
+        if (res == 0)
+            return p_token;
+    }
 
-    p_token.token->value    = malloc(2 * sizeof(char));
-    p_token.token->value[0] = lexeme;
-    p_token.token->value[1] = '\0';
-
-    gora_list_init(&p_token.token->link);
-
-    p_token.chr_consumed = 1;
+    alloc_token_of_char(lexeme, GORA_TT_UNKNOWN, &p_token);
 
     return p_token;
 }
