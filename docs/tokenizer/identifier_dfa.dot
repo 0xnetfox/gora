@@ -1,0 +1,9 @@
+digraph identifier_dfa {
+	rankdir=LR;
+
+	node [shape = doublecircle]; q2;
+	node [shape = circle];
+	
+	q1 -> q2 [label = "A-Z,a-z"]
+	q2 -> q2 [label = "A-Z,a-z,0-9"]
+}

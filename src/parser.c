@@ -26,12 +26,12 @@ bool syms_test_num(char sym)
     return sym >= '0' && sym <= '9';
 }
 
-bool syms_test_cap_alph(char sym)
+bool syms_test_upp_alph(char sym)
 {
     return sym >= 'A' && sym <= 'Z';
 }
 
-bool syms_test_alph(char sym)
+bool syms_test_low_alph(char sym)
 {
     return sym >= 'a' && sym <= 'z';
 }
@@ -46,57 +46,29 @@ bool syms_test_any_string_ascii(char sym)
     return !syms_test_quote(sym) && sym >= 0x20 && sym <= 0x7E;
 }
 
-bool syms_test_cap_alph_num(char sym)
+bool syms_test_upp_alph_num(char sym)
 {
-    return syms_test_cap_alph(sym) || syms_test_num(sym);
+    return syms_test_upp_alph(sym) || syms_test_num(sym);
+}
+
+bool syms_test_alph(char sym)
+{
+    return syms_test_low_alph(sym) || syms_test_upp_alph(sym);
 }
 
 bool syms_test_alph_num(char sym)
 {
-    return syms_test_alph(sym) || syms_test_cap_alph(sym) || syms_test_num(sym);
+    return syms_test_alph(sym) || syms_test_num(sym);
 }
 
 // clang-format off
 // TODO :: netfox :: write tests owo
 static struct fsm st88_identifier_fsm = {
     .i_state     = 1,
-    .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
-    .transitions = (struct transition[]) {
-        { .i_state = 1, .n_state = 2, .syms = syms_test_pound    },
-        { .i_state = 2, .n_state = 3, .syms = syms_test_alph_num },
-        { .i_state = 3, .n_state = 3, .syms = syms_test_alph_num },
-        GORA_FSM_NULL_TRANSITION
-    },
-};
-
-static struct fsm st88_array_open_fsm = {
-    .i_state     = 1,
-    .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
-    .transitions = (struct transition[]) {
-        { .i_state = 1, .n_state = 2, .syms = syms_test_pound            },
-        { .i_state = 2, .n_state = 3, .syms = syms_test_open_parenthesis },
-        GORA_FSM_NULL_TRANSITION
-    },
-};
-
-// TODO :: netfox :: write tests owo
-static struct fsm st88_array_close_fsm = {
-    .i_state     = 1,
     .f_states    = (uint8_t[]) { 2, GORA_FSM_NULL_STATE },
     .transitions = (struct transition[]) {
-        { .i_state = 1, .n_state = 2, .syms = syms_test_close_parenthesis },
-        GORA_FSM_NULL_TRANSITION
-    },
-};
-
-// TODO :: netfox :: write tests owo
-static struct fsm st88_symbol_fsm = {
-    .i_state     = 1,
-    .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
-    .transitions = (struct transition[]) {
-        { .i_state = 1, .n_state = 2, .syms = syms_test_pound    },
-        { .i_state = 2, .n_state = 3, .syms = syms_test_alph_num },
-        { .i_state = 3, .n_state = 3, .syms = syms_test_alph_num },
+        { .i_state = 1, .n_state = 2, .syms = syms_test_alph     },
+        { .i_state = 2, .n_state = 2, .syms = syms_test_alph_num },
         GORA_FSM_NULL_TRANSITION
     },
 };
@@ -147,14 +119,14 @@ static struct fsm st88_number_fsm = {
       { .i_state = 7,  .n_state = 9,  .syms = syms_test_num          },
       { .i_state = 8,  .n_state = 9,  .syms = syms_test_num          },
       { .i_state = 9,  .n_state = 9,  .syms = syms_test_num          },
-      { .i_state = 10, .n_state = 12, .syms = syms_test_cap_alph_num },
+      { .i_state = 10, .n_state = 12, .syms = syms_test_upp_alph_num },
       { .i_state = 10, .n_state = 11, .syms = syms_test_hypen        },
-      { .i_state = 11, .n_state = 12, .syms = syms_test_cap_alph_num },
-      { .i_state = 12, .n_state = 12, .syms = syms_test_cap_alph_num },
+      { .i_state = 11, .n_state = 12, .syms = syms_test_upp_alph_num },
+      { .i_state = 12, .n_state = 12, .syms = syms_test_upp_alph_num },
       { .i_state = 12, .n_state = 13, .syms = syms_test_dot          },
       { .i_state = 12, .n_state = 7,  .syms = syms_test_e            },
-      { .i_state = 13, .n_state = 14, .syms = syms_test_cap_alph_num },
-      { .i_state = 14, .n_state = 14, .syms = syms_test_cap_alph_num },
+      { .i_state = 13, .n_state = 14, .syms = syms_test_upp_alph_num },
+      { .i_state = 14, .n_state = 14, .syms = syms_test_upp_alph_num },
       { .i_state = 14, .n_state = 7,  .syms = syms_test_e            },
       GORA_FSM_NULL_TRANSITION
     },
@@ -218,7 +190,7 @@ int try_parse_fsm(
     strncpy(p_token->token->value, stream, fsm_res.stream_consumed);
     p_token->token->value[fsm_res.stream_consumed] = '\0';
 
-    p_token->token->type  = GORA_TT_LITERAL;
+    p_token->token->type  = type;
     p_token->chr_consumed = fsm_res.stream_consumed;
     gora_list_init(&p_token->token->link);
 
@@ -255,6 +227,17 @@ struct p_token parse_internal(char* stream, char lexeme)
             return p_token;
     }
 
+    // TODO :: netfox :: identifier should store a relation to the sym table,
+    // not the literal identifier name.
+    if (syms_test_alph(lexeme)) {
+        int res = try_parse_fsm(&st88_identifier_fsm, stream, GORA_TT_IDENTIFIER, &p_token);
+        if (res == 0)
+            return p_token;
+    }
+
+    // TODO :: netfox :: it may be better to write a table to pair the lexeme
+    // to its token type, then we can refactor the blocks below that share the
+    // same logic.
     if (lexeme == '#') {
         int res = alloc_token_of_char(lexeme, GORA_TT_SYM_POUND, &p_token);
         if (res == 0)
