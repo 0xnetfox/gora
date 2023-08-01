@@ -200,6 +200,7 @@ int try_parse_fsm(
 // TODO :: netfox :: find better name
 struct p_token parse_internal(char* stream, char lexeme)
 {
+    int res;
     struct p_token p_token;
 
     if (is_whitespace(lexeme)) {
@@ -209,55 +210,30 @@ struct p_token parse_internal(char* stream, char lexeme)
         return p_token;
     }
 
-    if (is_st88_numeric(lexeme)) {
-        int res = try_parse_fsm(&st88_number_fsm, stream, GORA_TT_LITERAL, &p_token);
-        if (res == 0)
-            return p_token;
-    }
-
-    if (is_st88_character(lexeme)) {
-        int res = try_parse_fsm(&st88_character_fsm, stream, GORA_TT_LITERAL, &p_token);
-        if (res == 0)
-            return p_token;
-    }
-
-    if (is_st88_string(lexeme)) {
-        int res = try_parse_fsm(&st88_string_fsm, stream, GORA_TT_LITERAL, &p_token);
-        if (res == 0)
-            return p_token;
-    }
-
+    if (is_st88_numeric(lexeme))
+        res = try_parse_fsm(&st88_number_fsm, stream, GORA_TT_LITERAL, &p_token);
+    else if (is_st88_character(lexeme))
+        res = try_parse_fsm(&st88_character_fsm, stream, GORA_TT_LITERAL, &p_token);
+    else if (is_st88_string(lexeme))
+        res = try_parse_fsm(&st88_string_fsm, stream, GORA_TT_LITERAL, &p_token);
     // TODO :: netfox :: identifier should store a relation to the sym table,
     // not the literal identifier name.
-    if (syms_test_alph(lexeme)) {
-        int res = try_parse_fsm(&st88_identifier_fsm, stream, GORA_TT_IDENTIFIER, &p_token);
-        if (res == 0)
-            return p_token;
-    }
-
+    else if (syms_test_alph(lexeme))
+        res = try_parse_fsm(&st88_identifier_fsm, stream, GORA_TT_IDENTIFIER, &p_token);
     // TODO :: netfox :: it may be better to write a table to pair the lexeme
     // to its token type, then we can refactor the blocks below that share the
     // same logic.
-    if (lexeme == '#') {
-        int res = alloc_token_of_char(lexeme, GORA_TT_SYM_POUND, &p_token);
-        if (res == 0)
-            return p_token;
-    }
+    else if (lexeme == '#')
+        res = alloc_token_of_char(lexeme, GORA_TT_SYM_POUND, &p_token);
+    else if (lexeme == '(')
+        res = alloc_token_of_char(lexeme, GORA_TT_SYM_PAR_OPEN, &p_token);
+    else if (lexeme == ')')
+        res = alloc_token_of_char(lexeme, GORA_TT_SYM_PAR_CLOSE, &p_token);
 
-    if (lexeme == '(') {
-        int res = alloc_token_of_char(lexeme, GORA_TT_SYM_PAR_OPEN, &p_token);
-        if (res == 0)
-            return p_token;
-    }
-
-    if (lexeme == ')') {
-        int res = alloc_token_of_char(lexeme, GORA_TT_SYM_PAR_CLOSE, &p_token);
-        if (res == 0)
-            return p_token;
-    }
+    if (res == 0)
+        return p_token;
 
     alloc_token_of_char(lexeme, GORA_TT_UNKNOWN, &p_token);
-
     return p_token;
 }
 
