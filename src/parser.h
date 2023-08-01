@@ -8,6 +8,11 @@
 enum TokenType {
     GORA_TT_IDENTIFIER,
     GORA_TT_LITERAL,
+
+    GORA_TT_SYM_POUND,
+    GORA_TT_SYM_PAR_OPEN,
+    GORA_TT_SYM_PAR_CLOSE,
+
     GORA_TT_UNKNOWN
 };
 

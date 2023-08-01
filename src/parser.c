@@ -256,19 +256,19 @@ struct p_token parse_internal(char* stream, char lexeme)
     }
 
     if (lexeme == '#') {
-        if (stream[1] == '(') {
-            int res = try_parse_fsm(&st88_array_open_fsm, stream, GORA_TT_LITERAL, &p_token);
-            if (res == 0)
-                return p_token;
-        } else {
-            int res = try_parse_fsm(&st88_symbol_fsm, stream, GORA_TT_LITERAL, &p_token);
-            if (res == 0)
-                return p_token;
-        }
+        int res = alloc_token_of_char(lexeme, GORA_TT_SYM_POUND, &p_token);
+        if (res == 0)
+            return p_token;
+    }
+
+    if (lexeme == '(') {
+        int res = alloc_token_of_char(lexeme, GORA_TT_SYM_PAR_OPEN, &p_token);
+        if (res == 0)
+            return p_token;
     }
 
     if (lexeme == ')') {
-        int res = try_parse_fsm(&st88_array_close_fsm, stream, GORA_TT_LITERAL, &p_token);
+        int res = alloc_token_of_char(lexeme, GORA_TT_SYM_PAR_CLOSE, &p_token);
         if (res == 0)
             return p_token;
     }
