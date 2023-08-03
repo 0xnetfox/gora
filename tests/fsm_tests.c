@@ -12,21 +12,26 @@ bool syms_test_num(char sym)
 GORA_FSM_TEST_CHAR(syms_test_dot, '.')
 GORA_FSM_TEST_CHAR(syms_test_hypen, '-')
 
+// clang-format off
+
 /// FSM for tests, parses any number with the following format:
 /// 1, 1.23, -1, -1.23
 static struct fsm test_fsm_num = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 2, 5, GORA_FSM_NULL_STATE },
     .transitions = (struct transition[]) {
-                                { .i_state = 1, .n_state = 2, .syms = syms_test_num },
-                                { .i_state = 1, .n_state = 3, .syms = syms_test_hypen },
-                                { .i_state = 2, .n_state = 2, .syms = syms_test_num },
-                                { .i_state = 2, .n_state = 4, .syms = syms_test_dot },
-                                { .i_state = 3, .n_state = 2, .syms = syms_test_num },
-                                { .i_state = 4, .n_state = 5, .syms = syms_test_num },
-                                { .i_state = 5, .n_state = 5, .syms = syms_test_num },
-                                GORA_FSM_NULL_TRANSITION },
+      { .i_state = 1, .n_state = 2, .syms = syms_test_num   },
+      { .i_state = 1, .n_state = 3, .syms = syms_test_hypen },
+      { .i_state = 2, .n_state = 2, .syms = syms_test_num   },
+      { .i_state = 2, .n_state = 4, .syms = syms_test_dot   },
+      { .i_state = 3, .n_state = 2, .syms = syms_test_num   },
+      { .i_state = 4, .n_state = 5, .syms = syms_test_num   },
+      { .i_state = 5, .n_state = 5, .syms = syms_test_num   },
+      GORA_FSM_NULL_TRANSITION
+    },
 };
+
+// clang-format on
 
 void test_next_gives_correct_state()
 {
