@@ -62,7 +62,6 @@ bool syms_test_alph_num(char sym)
 }
 
 // clang-format off
-// TODO :: netfox :: write tests owo
 static struct fsm st88_identifier_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 2, GORA_FSM_NULL_STATE },
@@ -73,7 +72,6 @@ static struct fsm st88_identifier_fsm = {
     },
 };
 
-// TODO :: netfox :: write tests owo
 static struct fsm st88_string_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
@@ -86,7 +84,6 @@ static struct fsm st88_string_fsm = {
     },
 };
 
-// TODO :: netfox :: write tests owo
 static struct fsm st88_character_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 3, GORA_FSM_NULL_STATE },
@@ -97,7 +94,6 @@ static struct fsm st88_character_fsm = {
     },
 };
 
-// TODO :: netfox :: write tests owo
 static struct fsm st88_number_fsm = {
     .i_state     = 1,
     .f_states    = (uint8_t[]) { 2, 4, 6, 9, 12, 14, GORA_FSM_NULL_STATE },
