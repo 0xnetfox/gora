@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "parser.h"
+#include "lexer.h"
 
 #define READ_MAX 16
 #define STREAM_CHUNK 512
@@ -65,10 +65,10 @@ int main(int argc, char** argv)
     if ((stream = gora_read_file(argv[1])) == NULL)
         goto file_err;
 
-    struct gora_list* token_lst = gora_parser_parse(stream);
+    struct gora_list* token_lst = gora_lexer_parse(stream);
 
     free(stream);
-    gora_parser_free_token_list(token_lst);
+    gora_lexer_free_token_list(token_lst);
 
     return EXIT_SUCCESS;
 

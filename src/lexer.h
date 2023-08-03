@@ -1,7 +1,7 @@
-#ifndef GORA_PARSER
-#define GORA_PARSER
+#ifndef GORA_LEXER_H
+#define GORA_LEXER_H
 
-#include "gora_list.h"
+#include "lib/list.h"
 #include <stdint.h>
 
 /// Indicates the valid types for tokens
@@ -23,8 +23,8 @@ struct token {
     struct gora_list link;
 };
 
-struct gora_list* gora_parser_parse(char* stream);
+struct gora_list* gora_lexer_parse(char* stream);
 
-void gora_parser_free_token_list(struct gora_list* lst);
+void gora_lexer_free_token_list(struct gora_list* lst);
 
-#endif // GORA_PARSER
+#endif // GORA_LEXER_H

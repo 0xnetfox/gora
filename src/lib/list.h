@@ -1,5 +1,5 @@
-#ifndef GORA_LIST
-#define GORA_LIST
+#ifndef GORA_LIST_H
+#define GORA_LIST_H
 
 /**
  * defines a double-linked structure and methods to interact with it.
@@ -27,4 +27,4 @@ void gora_list_insert(struct gora_list* lst, struct gora_list* elm);
          pos = tmp,                                                \
         tmp  = gora_container_of(pos->member.next, tmp, member))
 
-#endif // GORA_LIST
+#endif // GORA_LIST_H

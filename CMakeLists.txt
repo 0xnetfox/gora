@@ -9,12 +9,12 @@ enable_testing()
 add_executable(
     gora
     src/main.c
-    src/fsm.h
-    src/fsm.c
-    src/parser.c
-    src/parser.h
-    src/gora_list.h
-    src/gora_list.c
+    src/lexer.c
+    src/lexer.h
+    src/lib/fsm.h
+    src/lib/fsm.c
+    src/lib/list.h
+    src/lib/list.c
 )
 
 ### tests

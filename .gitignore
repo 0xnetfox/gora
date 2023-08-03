@@ -14,5 +14,8 @@ _deps
 # cache folder
 /.cache/
 
-# program executable
-gora
+# building folder
+/build
+
+# resources folder
+/res

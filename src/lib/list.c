@@ -1,4 +1,4 @@
-#include "gora_list.h"
+#include "list.h"
 #include <stddef.h>
 
 void gora_list_init(struct gora_list* lst)

@@ -1,5 +1,5 @@
 #include "../lib/unity/unity.h"
-#include "../src/fsm.c"
+#include "../src/lib/fsm.c"
 
 void setUp() { }
 void tearDown() { }

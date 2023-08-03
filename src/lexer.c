@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "fsm.h"
-#include "gora_list.h"
-#include "parser.h"
+#include "lib/fsm.h"
+#include "lib/list.h"
+#include "lexer.h"
 
 #define GORA_PARSER_CAP_ALPHA_NUM GORA_FSM_ALPH_B10_DIGIT GORA_FSM_ALPH_CAP_LETTERS
 
@@ -237,7 +237,7 @@ struct p_token parse_internal(char* stream, char lexeme)
     return p_token;
 }
 
-struct gora_list* gora_parser_parse(char* stream)
+struct gora_list* gora_lexer_parse(char* stream)
 {
     int  idx = 0;
     char lexeme;
@@ -262,7 +262,7 @@ struct gora_list* gora_parser_parse(char* stream)
     return token_lst;
 }
 
-void gora_parser_free_token_list(struct gora_list* lst)
+void gora_lexer_free_token_list(struct gora_list* lst)
 {
     struct token *curr, *next;
 
